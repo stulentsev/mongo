@@ -126,7 +126,7 @@ namespace mongo {
                         } else {
                           nCount++;
 
-                          BSONElement x( &e );
+                          BSONElement x( (const char*)&e );
                           values.insert( x );
                         }
                     }
