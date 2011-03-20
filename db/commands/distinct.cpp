@@ -53,6 +53,7 @@ namespace mongo {
             long long nscanned = 0; // locations looked at
             long long nscannedObjects = 0; // full objects looked at
             long long n = 0; // matches
+            long long nCount = 0;
             MatchDetails md;
 
             NamespaceDetails * d = nsdetails( ns.c_str() );
@@ -120,6 +121,7 @@ namespace mongo {
                         }
 
                         arr.append( e );
+                        nCount++;
 
                         BSONElement x( start + now );
 
@@ -141,7 +143,7 @@ namespace mongo {
             assert( start == bb.buf() );
 
             if(isCountCommand) {
-                result.appendNumber( "count" , arr.done().nFields() );
+                result.appendNumber( "count" , nCount );
             } else {
                 result.appendArray( "values" , arr.done() );
             }
