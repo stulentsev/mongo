@@ -29,7 +29,7 @@ namespace mongo {
         virtual bool slaveOk() const { return true; }
         virtual LockType locktype() const { return READ; }
         virtual void help( stringstream &help ) const {
-            help << "{ distinct : 'collection name' , key : 'a.b' , query : {}, count : 1 }";
+            help << "{ distinct : 'collection name' , key : 'a.b' , query : {}, count : true }";
         }
 
         bool run(const string& dbname, BSONObj& cmdObj, string& errmsg, BSONObjBuilder& result, bool fromRepl ) {
@@ -53,6 +53,7 @@ namespace mongo {
             long long nscanned = 0; // locations looked at
             long long nscannedObjects = 0; // full objects looked at
             long long n = 0; // matches
+            long long nCount = 0;
             MatchDetails md;
 
             NamespaceDetails * d = nsdetails( ns.c_str() );
@@ -116,10 +117,11 @@ namespace mongo {
                         int now = bb.len();
 
                         if(!isCountCommand) {
-                          uassert(10044,  "distinct too big, 4mb cap", ( now + e.size() + 1024 ) < bufSize );
+                          uassert(10044,  "distinct too big, 16mb cap", ( now + e.size() + 1024 ) < bufSize );
                         }
 
                         arr.append( e );
+                        nCount++;
 
                         BSONElement x( start + now );
 
@@ -141,7 +143,7 @@ namespace mongo {
             assert( start == bb.buf() );
 
             if(isCountCommand) {
-                result.appendNumber( "count" , arr.done().nFields() );
+                result.appendNumber( "count" , nCount );
             } else {
                 result.appendArray( "values" , arr.done() );
             }
