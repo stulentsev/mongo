@@ -39,7 +39,7 @@ namespace mongo {
             string key = cmdObj["key"].valuestrsafe();
             BSONObj keyPattern = BSON( key << 1 );
 
-            bool isCountCommand = cmdObj.getIntField("count") == 1;
+            bool isCountCommand = cmdObj.getBoolField("count");
 
             BSONObj query = getQuery( cmdObj );
 
