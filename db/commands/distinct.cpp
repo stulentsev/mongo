@@ -121,13 +121,13 @@ namespace mongo {
                           uassert(10044,  "distinct too big, 16mb cap", ( now + e.size() + 1024 ) < bufSize );
                           arr.append( e );
 
+
                           BSONElement x( start + now );
                           values.insert( x );
                         } else {
                           nCount++;
 
-                          BSONElement x( (const char*)&e );
-                          values.insert( x );
+                          values.insert( e );
                         }
                     }
                 }
